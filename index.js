@@ -12,6 +12,7 @@ const HeaderLogo = () => {
     |
     | String Matching & Hamming Distance
     | - by Kelompok 15
+    | * Cahyo Dwi Putro (1461900333)
     ----------------------------------\n`)
 }
 
@@ -25,25 +26,33 @@ function hammingDistance(stringA, stringB) {
         }
         return result
     } else {
-        return 'Strings do not have equal length'
+        return false
     }
 }
 
+const sum = (array) => {
+    const sumArray = array.reduce((prevValue, currentValue) => {
+        return prevValue + currentValue.panjang
+    }, 0)
+    return { tag: array[0].tag, jumlah: sumArray }
+}
+
+
 (async () => {
     try {
-        // console.log(hammingDistance('kata1', 'kata2'))
         await HeaderLogo()
-        const timeStart = new Date()
         const resData = []
+        const dataHD  = []
+        const totalHD = []
         const string = readlineSync.question('[?] Masukan Kalimat: ')
         const filter = [
             { kategori: 'Olahraga', tag: ['balapan', 'motogp', 'balap', 'bola', 'basket', 'sepak', 'lapangan'] },
-            { kategori: 'Politik', tag: ['partai', 'pemilu', 'pilkada', 'pemilihan', 'dpr', 'dpd', 'dprd', 'jokowi', 'prabowo'] },
+            { kategori: 'Politik', tag: ['partai', 'pemilu', 'pilkada', 'pemilihan', 'dpr', 'dpd', 'dprd', 'mpr', 'jokowi', 'prabowo'] },
             { kategori: 'Gaming', tag: ['point blank', 'dota 2', 'mobile legend', 'free fire', 'lost saga', 'pertandingan esport', 'esport', 'gamers'] }
         ]
-        
-        console.log(`\n[@ ${new Date()-timeStart}ms] Program dimulai...`.green)
-        console.log(`[@ ${new Date()-timeStart}ms] Memulai untuk menganalisis...`.green)
+
+        console.log(`\n[*] Program dimulai...`.green)
+        console.log(`[*] Memulai untuk menganalisis...`.green)
         console.log(`--- Kalimat memliki jumlah kata sebanyak ${string.split(' ').length} kata...`.yellow)
         console.log(`--- Berhasil memuat ${filter.length} kategori yaitu :${filter.map(item => ` ${item.kategori}`)}`.yellow)
 
@@ -52,17 +61,31 @@ function hammingDistance(stringA, stringB) {
                 var pattern = new RegExp(item, 'gi')
                 var match = string.match(pattern)
                 if (match) {
-                    resData.push({
-                        kategori: filter[i].kategori,
-                        tag: item
-                    })
+                    resData.push({ kategori: filter[i].kategori, tag: item })
                 }
             })
         }
 
         console.log(`--- Program menemukan patern/pola sebagai berikut :`.yellow)
         resData.map(item => console.log(`\t-> Kata "${`${item.tag}`.bgRed}" (termasuk kategori ${`${item.kategori}`.bgRed})`))
-        console.log(`\n[@ ${new Date()-timeStart}ms] Program selesai dijalankan ${symbols.success}`.green)
+
+        console.log(`\n[*] Menghitung hamming distance...`.green)
+        string.split(' ').map(kata => {
+            resData.map(item => {
+                let check = hammingDistance(kata, item.tag)
+                if (check) {
+                    dataHD.push({ tag: item.tag, panjang: check })
+                }
+            })
+        })
+
+        resData.map(data => {
+            const newArray = dataHD.filter(element =>  element.tag == data.tag)
+            const resultSum = sum(newArray)
+            console.log(`\t-> Kata "${`${resultSum.tag}`.bgRed}" memiliki hamming distance sebanyak ${`${resultSum.jumlah}`.bold.cyan}`)
+        })
+
+        console.log(`\n[*] Program selesai dijalankan ${symbols.success}`.green)
     } catch(e) {
         console.error(e)
     }
