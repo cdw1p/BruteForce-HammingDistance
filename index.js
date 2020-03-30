@@ -11,8 +11,10 @@ const HeaderLogo = () => {
     |_) | |_| |_(/_   |  (_) | (_ (/_
     |
     | String Matching & Hamming Distance
-    | - by Kelompok 15
+    | - by Kelompok 15 (kelas S)
     | * Cahyo Dwi Putro (1461900333)
+    | * Mochammad Vicky Darmawan (1461900330)
+    | * Enrico Austria Lieger (1461900329)
     ----------------------------------\n`)
 }
 
@@ -37,17 +39,15 @@ const sum = (array) => {
     return { tag: array[0].tag, jumlah: sumArray }
 }
 
-
 (async () => {
     try {
         await HeaderLogo()
         const resData = []
         const dataHD  = []
-        const totalHD = []
         const string = readlineSync.question('[?] Masukan Kalimat: ')
         const filter = [
             { kategori: 'Olahraga', tag: ['balapan', 'motogp', 'balap', 'bola', 'basket', 'sepak', 'lapangan'] },
-            { kategori: 'Politik', tag: ['partai', 'pemilu', 'pilkada', 'pemilihan', 'dpr', 'dpd', 'dprd', 'mpr', 'jokowi', 'prabowo'] },
+            { kategori: 'Politik', tag: ['partai', 'pemilu', 'pilkada', 'pilpres', 'pileg', 'pemilihan', 'dpr', 'dpd', 'dprd', 'mpr', 'mk', 'jokowi', 'prabowo'] },
             { kategori: 'Gaming', tag: ['point blank', 'dota 2', 'mobile legend', 'free fire', 'lost saga', 'pertandingan esport', 'esport', 'gamers'] }
         ]
 
@@ -57,17 +57,26 @@ const sum = (array) => {
         console.log(`--- Berhasil memuat ${filter.length} kategori yaitu :${filter.map(item => ` ${item.kategori}`)}`.yellow)
 
         for (var i=0; i<filter.length; i++) {
+            let splitKalimat = string.toLowerCase().split(' ')
             filter[i].tag.map(async item => {
-                var pattern = new RegExp(item, 'gi')
-                var match = string.match(pattern)
-                if (match) {
-                    resData.push({ kategori: filter[i].kategori, tag: item })
+                for (var j=0; j<splitKalimat.length; j++) {
+                    if (splitKalimat[j] == item.toLowerCase()) {
+                        resData.push({ kategori: filter[i].kategori, tag: item })
+                    }
                 }
             })
+
+            // filter[i].tag.map(async item => {
+            //     var pattern = new RegExp(item, 'gi')
+            //     var match = string.match(pattern)
+            //     if (match) {
+            //         resData.push({ kategori: filter[i].kategori, tag: item })
+            //     }
+            // })
         }
 
         console.log(`--- Program menemukan patern/pola sebagai berikut :`.yellow)
-        resData.map(item => console.log(`\t-> Kata "${`${item.tag}`.bgRed}" (termasuk kategori ${`${item.kategori}`.bgRed})`))
+        resData.map(item => console.log(`\t-> Kata "${`${item.tag.toUpperCase()}`.bgRed}" (termasuk kategori ${`${item.kategori}`.bgRed})`))
 
         console.log(`\n[*] Menghitung hamming distance...`.green)
         string.split(' ').map(kata => {
@@ -82,7 +91,7 @@ const sum = (array) => {
         resData.map(data => {
             const newArray = dataHD.filter(element =>  element.tag == data.tag)
             const resultSum = sum(newArray)
-            console.log(`\t-> Kata "${`${resultSum.tag}`.bgRed}" memiliki hamming distance sebanyak ${`${resultSum.jumlah}`.bold.cyan}`)
+            console.log(`\t-> Kata "${`${resultSum.tag.toUpperCase()}`.bgRed}" memiliki hamming distance sebanyak ${`${resultSum.jumlah}`.bold.cyan}`)
         })
 
         console.log(`\n[*] Program selesai dijalankan ${symbols.success}`.green)
